@@ -6,17 +6,17 @@ import 'package:tutorials/locale/translations.dart';
 import 'package:tutorials/utils/app_utils.dart';
 
 
-class SchoolCardSelect extends StatefulWidget {
-  const SchoolCardSelect({Key? key}) : super(key: key);
+class SearchSelect extends StatefulWidget {
+  const SearchSelect({Key? key}) : super(key: key);
 
 
   @override
-  State<SchoolCardSelect> createState() => _SchoolCardSelectState();
+  State<SearchSelect> createState() => _SearchSelectState();
 }
 
-class _SchoolCardSelectState extends State<SchoolCardSelect> {
+class _SearchSelectState extends State<SearchSelect> {
 
-  TextEditingController _searchQueryController = TextEditingController();
+  TextEditingController _queryController = TextEditingController();
   bool _isSearching = false;
 
   @override
@@ -49,7 +49,7 @@ class _SchoolCardSelectState extends State<SchoolCardSelect> {
   Widget _buildSearchField() {
     return
     TextField(
-      controller: _searchQueryController,
+      controller: _queryController,
       autofocus: true,
       decoration: InputDecoration(
         hintText: "Search...",
@@ -70,13 +70,13 @@ class _SchoolCardSelectState extends State<SchoolCardSelect> {
         IconButton(
           icon: const Icon(Icons.clear),
           onPressed: () {
-            if (_searchQueryController == null ||
-                _searchQueryController.text.isEmpty) {
+            if (_queryController == null ||
+                _queryController.text.isEmpty) {
               Navigator.pop(context);
               return;
             }
             setState(() {
-              _searchQueryController.clear();
+              _queryController.clear();
               _isSearching = false;
             });
           },

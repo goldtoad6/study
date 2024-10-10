@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:tutorials/component/dialog/dialogs.dart';
 import 'package:tutorials/component/image.crop/image_cropper.dart';
 import 'package:tutorials/component/log/logs.dart';
 import 'package:tutorials/component/picker/image_picker.dart';
@@ -14,6 +13,8 @@ import 'package:tutorials/request/origin/school_card_query_result.dart';
 import 'package:tutorials/request/school_card_request.dart';
 import 'package:tutorials/utils/app_utils.dart';
 import 'package:tutorials/utils/date_time_utils.dart';
+import 'package:tutorials/request/origin/school_meta_data_query_result.dart' as SchoolResult;
+import 'package:tutorials/request/origin/subject_meta_data_query_result.dart' as SubjectResult;
 
 class SchoolCardEdit extends StatefulWidget {
   const SchoolCardEdit({Key? key}) : super(key: key);
@@ -104,13 +105,14 @@ class _SchoolCardEditState extends State<SchoolCardEdit> {
               title: GestureDetector(
                 onTap: () async {
                   Logs.info("onTap111");
-                  var selectSchool = await AppUtils.toPageWithResult(context,
-                      RouteNameConstant.route_name_school_card_select,
+                  SchoolResult.Data? selectSchool = await AppUtils.toPageWithResult(context,
+                      RouteNameConstant.route_name_school_card_school_select,
                       args: arg);
                   Logs.info("selectSchool ${selectSchool}");
                   if(selectSchool != null) {
                     setState(() {
-                      arg?.name = "河海大学 ${selectSchool}";
+                      arg?.name = selectSchool.name;
+                      arg?.imageUrl = selectSchool.imageUrl;
                     });
                   }
                 },
@@ -122,12 +124,15 @@ class _SchoolCardEditState extends State<SchoolCardEdit> {
               subtitle: GestureDetector(
                 onTap: () async {
                   Logs.info("onTap222");
-                  List<String> contents = [];
-                  contents.add("计算机科学预计技术");
-                  contents.add("土木工程");
-                  contents.add("机械工程以及自动化");
-                  var selectI = await Dialogs.showButtonSelectDialog(context, contents, null);
-                  Logs.info("onTap111 ${selectI}");
+                  SubjectResult.Data? selectSubject = await AppUtils.toPageWithResult(context,
+                      RouteNameConstant.route_name_school_card_subject_select,
+                      args: arg);
+                  Logs.info("selectSubject ${selectSubject?.name}");
+                  if(selectSubject != null) {
+                    setState(() {
+                      arg?.subject = selectSubject.name;
+                    });
+                  }
                 },
                 child: Text(
                   arg?.subject ?? "计算机科学预计技术",
@@ -139,12 +144,12 @@ class _SchoolCardEditState extends State<SchoolCardEdit> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 TextButton(
-                  child: const Text('保存'),
+                  child: Text(Translations.textOf(context, "all.btn.save")),
                   onPressed: () {
-                    SchoolCardRequests.save(arg??Data()).then((result){
-                      Logs.info('result.common.message = ${result.msg}');
-                      Toasts.show(result.msg??'成功');
-                    });
+                      SchoolCardRequests.save(arg??Data()).then((result){
+                        Logs.info('result.common.message = ${result.msg}');
+                        Toasts.show(result.msg??'成功');
+                      });
                   },
                 ),
                 const SizedBox(width: 8),
