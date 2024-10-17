@@ -82,14 +82,14 @@ class _SchoolCardState extends State<SchoolCard> {
       floatingActionButton: FloatingActionButton(
         onPressed: _insertSchoolRecord,
         tooltip: '+',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.share),
       ),
     );
   }
 
   Future<Null> _onRefresh() async {
     showLoading();
-    SchoolCardQueryRequestParam requestParam = new SchoolCardQueryRequestParam();
+    SchoolCardQueryRequestParam requestParam = SchoolCardQueryRequestParam();
     SchoolCardRequests.query(requestParam).then((result) {
       Logs.info('_onRefresh responseBody=' + (result?.toString() ?? ""));
       hideLoading();

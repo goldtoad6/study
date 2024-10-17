@@ -14,24 +14,27 @@ class SchoolCardRequests {
 
   static Future<SchoolCardQueryResult> query(
       SchoolCardQueryRequestParam requestParam) async {
-    Logs.info('request param : ${json.encode(requestParam?.toString())}');
+    Logs.info('request param : ${requestParam?.toString()}');
 
     if(await SettingCaches.getMockSwitch() == 'true'){
       return Future.delayed(const Duration(seconds: 1), () => mock());
     }
 
-    Map<String, String> param = new HashMap();
-    param.putIfAbsent("param", () => json.encode(requestParam));
+    Map<String, String> param = HashMap();
+    // param.putIfAbsent("param", () => json.encode(requestParam));
 
     return Future.value(
-        HttpRequests.get(HttpConstant.url_tv_query_page, param, null).then((value) {
+        HttpRequests.get(HttpConstant.url_school_card_query_page, param, null).then((value) {
           Logs.info('request result : ${value.responseBody}');
           return SchoolCardQueryResult.fromJson(jsonDecode(value.responseBody));
         }));
   }
 
   static SchoolCardQueryResult mock() {
-    String mock = '{"code":200,"originCode":0,"msg":null,"originMsg":null,"data":[{"id":123,"userId":null,"name":"河海大学","subject":"计算机科学与技术","timeStart":"2013-09-06 00:00:00","timeEnd":"2017-06-24 00:00:00","imageUrl":"https://upload.wikimedia.org/wikipedia/zh/thumb/3/3f/Hohai_University_logo.svg/630px-Hohai_University_logo.svg.png?20220328102013"}],"pagination":{"targetPage":0,"pageSize":10,"total":13}}';
+    String mock = '{"code":200,"originCode":0,"msg":null,"originMsg":null,"data":['
+        '{"id":123,"userId":null,"name":"河海大学","subject":"计算机科学与技术","timeStart":"2013-09-06 00:00:00","timeEnd":"2017-06-24 00:00:00","imageUrl":"https://upload.wikimedia.org/wikipedia/zh/thumb/3/3f/Hohai_University_logo.svg/630px-Hohai_University_logo.svg.png?20220328102013"}'
+        ',{"id":124,"userId":null,"name":"清华大学","subject":"计算机科学与技术","timeStart":"2017-09-06 00:00:00","timeEnd":"2019-06-24 00:00:00","imageUrl":"https://www.shanghairanking.cn/_uni/logo/27532357.png"}'
+        '],"pagination":{"targetPage":0,"pageSize":10,"total":13}}';
     Logs.info('request result mock : ${mock}');
     return SchoolCardQueryResult.fromJson(jsonDecode(mock));
 
